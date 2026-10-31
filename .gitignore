@@ -1,0 +1,18 @@
+# Claude Code instructions: never commit
+CLAUDE.md
+.claude/
+
+# LaTeX build files (PDF is a CI artifact, not committed)
+build/
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.pdf

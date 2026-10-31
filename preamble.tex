@@ -1,0 +1,64 @@
+% Packages, macros, entry/meeting environments
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{siunitx}
+\usepackage{fancyhdr}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\usepackage[backend=biber,style=numeric-comp,sorting=none]{biblatex}
+\addbibresource{refs.bib}
+
+\graphicspath{{img/}}
+
+% Block paragraphs: no indent, space between
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{DIMT 3YP Logbook}
+\fancyhead[R]{Billy Adamson}
+\fancyfoot[C]{\thepage}
+
+% Entry types and their colours
+\definecolor{research}{HTML}{1F5FA8}
+\definecolor{analysis}{HTML}{2E7D32}
+\definecolor{meeting}{HTML}{8E24AA}
+\definecolor{design}{HTML}{E65100}
+\definecolor{reflection}{HTML}{546E7A}
+
+% \entryheader{type}{YYYY-MM-DD}{title}
+% type is one of: research, analysis, meeting, design, reflection
+\newcommand{\entryheader}[3]{%
+  \section[#2: #3]{#3}%
+  \begin{tcolorbox}[colback=#1!8,colframe=#1,boxrule=0.6pt,arc=2pt,
+      left=6pt,right=6pt,top=3pt,bottom=3pt]
+    \textbf{\MakeUppercase{#1}}\hfill\textbf{#2}
+  \end{tcolorbox}%
+}
+
+% Optional tags line: \entrytags{synthetic-eeg, aad}
+\newcommand{\entrytags}[1]{\noindent\textit{Tags:} #1\par\medskip}
+
+% Labelled field, used for meeting minutes and entry sections
+\newcommand{\entryfield}[1]{\par\medskip\noindent\textbf{#1}\par\nopagebreak}
+
+% Meeting minutes: \begin{meeting}{YYYY-MM-DD}{Title}{team/supervisor/class session}
+\newenvironment{meeting}[3]{%
+  \entryheader{meeting}{#1}{#2}%
+  \noindent\textit{Type:} #3\par
+}{\par}
+
+% Entry: \begin{entry}{type}{YYYY-MM-DD}{Title}
+\newenvironment{entry}[3]{%
+  \entryheader{#1}{#2}{#3}%
+}{\par}
