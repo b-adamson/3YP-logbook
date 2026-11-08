@@ -1,0 +1,93 @@
+% Source note: notes/2026-11-02-mt4.md
+\begin{entry}{research}{MT4}{Research, product rethink, simulator plan and setup}
+\entrytags{users, aad, synthetic-eeg}
+
+\subsection*{Who needs this, and can it work?}
+\entryfield{What I did}
+Read papers on (1) how people with hearing loss experience music, and (2) whether you can tell from EEG which instrument someone is listening to.
+\entryfield{What I found}
+\begin{itemize}
+  \item Hearing aids are bad for music. In a survey of 176 hearing aid users, 67\% had some trouble with music \cite{Greasley2020}.
+  \item Cochlear implant users liked music better when the vocals were turned up by about 8\,dB. People with normal hearing preferred the original \cite{Tahmasebi2020}.
+  \item Telling which instrument someone is listening to from EEG works, but not very well: about 71\% with a full lab cap over 60\,s \cite{Simon2023}, and about 60\% for implant users \cite{Althoff2026}.
+  \item A Sony study got about 86\% using a cheap 4-electrode headband (Muse 2), but only tested 8 people \cite{Akama2026}.
+  \item Brain-reading models trained on speech don't work on music \cite{Simon2023}.
+  \item Headsets with electrodes only around the ear do much worse than a full cap \cite{Zhu2024}. Real-time systems take 5--12\,s to notice when you switch attention \cite{COCOHA2024}.
+\end{itemize}
+\entryfield{What I learned}
+\begin{itemize}
+  \item There is an identifiable target: people with hearing loss who struggle with music.
+  \item A simple fixed setting (``vocals always louder'') already helps them, so our product has to beat that.
+  \item There is very little EEG data recorded during music, which is a reason to generate fake data (my area).
+\end{itemize}
+
+\subsection*{Rethinking what the product is for}
+\entryfield{What I did}
+Questioned whether the MT3 idea made sense, and who it is actually for.
+\entryfield{The problem with the MT3 pitch}
+\begin{itemize}
+  \item For someone with normal hearing, a volume slider does the job better than EEG. It's faster, cheaper and more reliable.
+  \item We listed too many possible users.
+\end{itemize}
+\entryfield{New version}
+\begin{itemize}
+  \item Users: people with hearing aids or cochlear implants, who find music muddy.
+  \item Why turning it all up doesn't help: hearing loss blurs sounds together, and louder doesn't separate them.
+  \item Product: a music player that slowly turns up the part you're following and turns the rest down a little. It only changes when it's confident, and otherwise stays on your normal setting.
+  \item Why EEG and not a button: it keeps up as your attention moves during a song, and works when your hands or eyes are busy.
+\end{itemize}
+\entryfield{What changes for testing}
+Compare against a fixed setting like ``vocals louder'', not just against the original song.
+
+\subsection*{Planning the EEG simulator}
+\entryfield{What I did}
+Worked out what the simulator should produce, checked whether something like it already exists, and found a dataset to build it from.
+\entryfield{What it makes}
+Fake EEG of someone listening to a song while focusing on one instrument, as it would look on a given headset. Built in steps:
+\begin{enumerate}
+  \item How loud each instrument is over time.
+  \item How the brain responds to that loudness, learned from real recordings.
+  \item A boost for the instrument being listened to.
+  \item Background brain activity, taken from real recordings.
+  \item Noise like blinks, and the electrode positions of a chosen headset.
+\end{enumerate}
+\entryfield{What it's for}
+Training data (real music EEG is extremely limited), and predicting how well a cheap headset would work before buying one.
+\entryfield{Does it already exist?}
+Tools exist for parts of it: simulating EEG in general \cite{Gramfort2013}, background brain activity \cite{Cole2019}, fitting brain responses \cite{Brodbeck2023}, and simulating EEG for short events in MATLAB \cite{Krol2018}. One group generated fake EEG with AI for speech, and it barely helped \cite{Rannaleet2026}. I couldn't find anything that turns music into labelled fake EEG for a given headset. So what's new is the combination and the experiments, not the individual parts.
+\entryfield{Dataset}
+MAD-EEG \cite{Cantisani2019}. Downloaded it. It has 6 usable people and no electrodes near the ears, so it can't directly tell us about ear-based headsets.
+\entryfield{Plan for MT5}
+Check the dataset shows a clear brain response to the music; get a baseline accuracy on real data with Cody; build a first simple version of the simulator; get the model of the headset we will decide on from the team / Maxime's research.
+\subsection*{Setting up the repo and data}
+\entryfield{What I did}
+\begin{itemize}
+  \item Created the team GitHub repo: \url{https://github.com/b-adamson/attention-earbuds}. Kept it minimal (README, data notes) so the team can agree the structure together.
+  \item Downloaded MAD-EEG \cite{Cantisani2019} and added a small loader (\texttt{simulation/load\_madeeg.py}) that reads one trial into a Python dictionary.
+\end{itemize}
+\entryfield{What the data looks like}
+\begin{itemize}
+  \item Stored as HDF5: one file organised like folders. Subject $\rightarrow$ trial $\rightarrow$ arrays. A YAML file describes each trial (instruments, which one was attended, sample rates).
+  \item Each trial has the EEG (20 electrodes, 256\,Hz), the stereo mix heard, and each instrument's track on its own (44.1\,kHz). Duos have an empty third instrument slot.
+  \item 6 subjects and 246 trials in the preprocessed file. No electrodes near the ears.
+\end{itemize}
+\entryfield{Next}
+Write my own loudness extraction and brain-response (TRF) fit, and check for a clear response in the real data.
+
+\subsection*{Team meeting (08/11/2026)}
+\entryfield{Discussion doc}
+\url{https://docs.google.com/document/d/13DpkpDFB5p7-QVpHNyvnnZCEQ5L7WrmuGmXRaS7t8ks/edit}
+\entryfield{My contributions}
+\begin{itemize}
+  \item Proposed focusing on hearing aid / cochlear implant users, and testing against a fixed ``vocals louder'' setting.
+  \item Shared my progress on the simulator and the MAD-EEG dataset.
+  \item Suggested a folder per person in the team repo, and a shared data format between the simulator and Cody's decoder.
+\end{itemize}
+\entryfield{Actions}
+\begin{itemize}
+  \item Billy: check the music response in MAD-EEG is strong enough to build the simulator on.
+  \item Billy \& Cody: agree data format between simulator and decoder.
+  \item Maxime: send electrode positions for shortlisted headsets.
+\end{itemize}
+% TODO(Billy): add team decisions once everyone has filled in the doc.
+\end{entry}

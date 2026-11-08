@@ -1,4 +1,4 @@
-# MT2 SOLO paper — 3 min presentation — 2026-10-19
+# MT2 SOLO paper — 3 min presentation — MT2
 Type: research
 Source: handwritten notes (2 pages), transcribed
 

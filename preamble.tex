@@ -2,7 +2,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
-\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[a4paper,margin=2cm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage{booktabs}
@@ -20,7 +20,12 @@
 
 % Block paragraphs: no indent, space between
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.6em}
+\setlength{\parskip}{0.3em}
+\setlist{nosep,leftmargin=*,topsep=2pt}
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{1.2em}{0.4em}
+\titlespacing*{\subsection}{0pt}{0.8em}{0.3em}
+\titlespacing*{\subsubsection}{0pt}{0.6em}{0.2em}
 
 \setlength{\headheight}{14pt}
 \pagestyle{fancy}
@@ -47,10 +52,10 @@
 }
 
 % Optional tags line: \entrytags{synthetic-eeg, aad}
-\newcommand{\entrytags}[1]{\noindent\textit{Tags:} #1\par\medskip}
+\newcommand{\entrytags}[1]{\noindent\textit{Tags:} #1\par}
 
 % Labelled field, used for meeting minutes and entry sections
-\newcommand{\entryfield}[1]{\par\medskip\noindent\textbf{#1}\par\nopagebreak}
+\newcommand{\entryfield}[1]{\par\smallskip\noindent\textbf{#1}\par\nopagebreak}
 
 % Meeting minutes: \begin{meeting}{YYYY-MM-DD}{Title}{team/supervisor/class session}
 \newenvironment{meeting}[3]{%
@@ -62,3 +67,6 @@
 \newenvironment{entry}[3]{%
   \entryheader{#1}{#2}{#3}%
 }{\par}
+
+% One-line draft marker
+\newcommand{\draftnote}{\noindent\textcolor{red}{\textbf{DRAFT} -- rewrite in my own words.}\par}

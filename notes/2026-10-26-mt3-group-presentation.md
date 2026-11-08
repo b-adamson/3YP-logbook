@@ -1,4 +1,4 @@
-# MT3 group presentation — 2026-10-26
+# MT3 group presentation — MT3
 Type: design
 Source: my speaker notes for my sections of the team presentation (shared Google Slides deck: https://docs.google.com/presentation/d/1Oxd6Tg6B0aTTu7t88g_bSFyfhEGtFSLQw1oY34pUY1k/edit)
 
